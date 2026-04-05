@@ -1,12 +1,20 @@
 class Useragent < Formula
   desc "A powerful AI agent CLI with multi-model support and tool use"
   homepage "https://github.com/tricorelife-labs/useragent-releases"
-  version "0.1.0"
+  version "0.2.0"
 
   on_macos do
     on_arm do
-      url "https://github.com/tricorelife-labs/useragent-releases/releases/download/v0.1.0/useragent-0.1.0-aarch64-apple-darwin.tar.xz"
-      sha256 "54f1459eef620652b7878d10fa9c7ed32224a34cef161d2d477c04dd9a27d24a"
+      url "https://github.com/tricorelife-labs/useragent-releases/releases/download/v0.2.0/useragent-v0.2.0-aarch64-apple-darwin.tar.xz"
+      sha256 "c64a05064e0b3c3f81e28a4185d93319665de8ce9528643b532165059c635bd7"
+
+      def install
+        bin.install "useragent-cli" => "useragent"
+      end
+    end
+    on_intel do
+      url "https://github.com/tricorelife-labs/useragent-releases/releases/download/v0.2.0/useragent-v0.2.0-x86_64-apple-darwin.tar.xz"
+      sha256 "cebcc63c2a5de32bdcc27024df843d3d1c55af4575be34df006070380cfea627"
 
       def install
         bin.install "useragent-cli" => "useragent"
