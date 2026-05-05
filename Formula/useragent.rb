@@ -19,7 +19,7 @@ class Useragent < Formula
   end
 
   def install
-    bin.install "useragent-cli" => "useragent"
+    bin.install Dir["UserAgent-*/useragent-cli"].first => "useragent"
     pkgshare.install "config" => "examples" if (buildpath/"config").directory?
   end
 
