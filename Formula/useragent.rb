@@ -1,66 +1,44 @@
+# typed: strict
+# frozen_string_literal: true
+
+# Homebrew formula for UserAgent.
 class Useragent < Formula
-  desc "A powerful AI agent CLI with multi-model support and tool use"
-  homepage "https://github.com/tricorelife-labs/UserAgent"
+  desc "Powerful AI agent CLI with multi-model support and tool use"
+  homepage "https://github.com/tricorelife-labs/useragent-releases"
   version "0.4.4"
-  if OS.mac?
-    if Hardware::CPU.arm?
-      url "https://github.com/tricorelife-labs/UserAgent/releases/download/v0.4.4/UserAgent-aarch64-apple-darwin.tar.xz"
-      sha256 "eac758fe498c49519283ffb46cd6608ae6da138f976016d4956b62208d40900e"
-    end
-    if Hardware::CPU.intel?
-      url "https://github.com/tricorelife-labs/UserAgent/releases/download/v0.4.4/UserAgent-x86_64-apple-darwin.tar.xz"
-      sha256 "1c2a9fd6d0dd7a881ea8bec6a9b8cb230243e263875e6ce807dc89837e99ab65"
-    end
-  end
-  if OS.linux? && Hardware::CPU.intel?
-    url "https://github.com/tricorelife-labs/UserAgent/releases/download/v0.4.4/UserAgent-x86_64-unknown-linux-gnu.tar.xz"
-    sha256 "20fda45c625c802df423b131026b3e1c240d94e0183895de036165e1a15cb3a6"
-  end
-  license "MIT"
 
-  BINARY_ALIASES = {
-    "aarch64-apple-darwin":     {},
-    "x86_64-apple-darwin":      {},
-    "x86_64-unknown-linux-gnu": {},
-  }.freeze
-
-  def target_triple
-    cpu = Hardware::CPU.arm? ? "aarch64" : "x86_64"
-    os = OS.mac? ? "apple-darwin" : "unknown-linux-gnu"
-
-    "#{cpu}-#{os}"
-  end
-
-  def install_binary_aliases!
-    BINARY_ALIASES[target_triple.to_sym].each do |source, dests|
-      dests.each do |dest|
-        bin.install_symlink bin/source.to_s => dest
-      end
-    end
+  if OS.mac? && RbConfig::CONFIG["host_cpu"] == "arm64"
+    url "https://github.com/tricorelife-labs/useragent-releases/releases/download/v0.4.4/UserAgent-aarch64-apple-darwin.tar.xz"
+    sha256 "401c102f35f419fcd27a55e711d3740eefd68a0c85d186b34279ffe2ba714600"
+  elsif OS.mac? && RbConfig::CONFIG["host_cpu"] == "x86_64"
+    url "https://github.com/tricorelife-labs/useragent-releases/releases/download/v0.4.4/UserAgent-x86_64-apple-darwin.tar.xz"
+    sha256 "56ad4158271ff0fe546a6ace18aeb051d4f470f622555e4d0faa36e2a959f308"
+  elsif OS.linux? && RbConfig::CONFIG["host_cpu"] == "x86_64"
+    url "https://github.com/tricorelife-labs/useragent-releases/releases/download/v0.4.4/UserAgent-x86_64-unknown-linux-gnu.tar.xz"
+    sha256 "2cdf1b32463dc5997e445e964434aac2050b66e569f5ff60a8ec78f0e76207dc"
   end
 
   def install
-    if OS.mac? && Hardware::CPU.arm?
-      bin.install "axum_server", "cli", "comic_video_generator", "save_image_from_response", "segmented_video_gen",
-"server", "test_proxy", "tricore_agent", "useragent-cli"
-    end
-    if OS.mac? && Hardware::CPU.intel?
-      bin.install "axum_server", "cli", "comic_video_generator", "save_image_from_response", "segmented_video_gen",
-"server", "test_proxy", "tricore_agent", "useragent-cli"
-    end
-    if OS.linux? && Hardware::CPU.intel?
-      bin.install "axum_server", "cli", "comic_video_generator", "save_image_from_response", "segmented_video_gen",
-"server", "test_proxy", "tricore_agent", "useragent-cli"
-    end
+    bin.install "useragent-cli" => "useragent"
+    pkgshare.install "config" => "examples" if (buildpath/"config").directory?
+  end
 
-    install_binary_aliases!
+  def caveats
+    <<~EOS
+      Example mesh configs are installed to:
+        #{opt_pkgshare}/examples
 
-    # Homebrew will automatically install these, so we don't need to do that
-    doc_files = Dir["README.*", "readme.*", "LICENSE", "LICENSE.*", "CHANGELOG.*"]
-    leftover_contents = Dir["*"] - doc_files
+      To initialize the M4 provider config:
+        mkdir -p ~/.useragent
+        cp #{opt_pkgshare}/examples/mesh.m4-provider.toml.example ~/.useragent/mesh.toml
 
-    # Install any leftover files in pkgshare; these are probably config or
-    # sample files.
-    pkgshare.install(*leftover_contents) unless leftover_contents.empty?
+      To initialize an Intel consumer config:
+        mkdir -p ~/.useragent
+        cp #{opt_pkgshare}/examples/mesh.intel-consumer.toml.example ~/.useragent/mesh.toml
+    EOS
+  end
+
+  test do
+    assert_match version.to_s, shell_output("#{bin}/useragent --version 2>&1")
   end
 end
