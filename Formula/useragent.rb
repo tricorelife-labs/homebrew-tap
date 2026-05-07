@@ -20,6 +20,9 @@ class Useragent < Formula
 
   def install
     bin.install Dir["UserAgent-*/useragent-cli"].first => "useragent"
+    if (axum = Dir["UserAgent-*/axum_server"].first)
+      bin.install axum => "axum_server"
+    end
     pkgshare.install "config" => "examples" if (buildpath/"config").directory?
   end
 
@@ -40,5 +43,6 @@ class Useragent < Formula
 
   test do
     assert_match version.to_s, shell_output("#{bin}/useragent --version 2>&1")
+    assert_path_exists bin/"axum_server"
   end
 end
