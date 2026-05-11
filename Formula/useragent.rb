@@ -5,17 +5,14 @@
 class Useragent < Formula
   desc "Powerful AI agent CLI with multi-model support and tool use"
   homepage "https://github.com/tricorelife-labs/useragent-releases"
-  version "0.4.4"
+  version "0.5.0-rc.3"
 
   if OS.mac? && RbConfig::CONFIG["host_cpu"] == "arm64"
-    url "https://github.com/tricorelife-labs/useragent-releases/releases/download/v0.4.4/UserAgent-aarch64-apple-darwin.tar.xz"
-    sha256 "401c102f35f419fcd27a55e711d3740eefd68a0c85d186b34279ffe2ba714600"
+    url "https://github.com/tricorelife-labs/useragent-releases/releases/download/v0.5.0-rc.3/UserAgent-aarch64-apple-darwin.tar.xz"
+    sha256 "c9bd0cd47fc670cc7f93b9d73f3640bdebe2fd859808ff212df05a98df6173b5"
   elsif OS.mac? && RbConfig::CONFIG["host_cpu"] == "x86_64"
-    url "https://github.com/tricorelife-labs/useragent-releases/releases/download/v0.4.4/UserAgent-x86_64-apple-darwin.tar.xz"
-    sha256 "56ad4158271ff0fe546a6ace18aeb051d4f470f622555e4d0faa36e2a959f308"
-  elsif OS.linux? && RbConfig::CONFIG["host_cpu"] == "x86_64"
-    url "https://github.com/tricorelife-labs/useragent-releases/releases/download/v0.4.4/UserAgent-x86_64-unknown-linux-gnu.tar.xz"
-    sha256 "2cdf1b32463dc5997e445e964434aac2050b66e569f5ff60a8ec78f0e76207dc"
+    url "https://github.com/tricorelife-labs/useragent-releases/releases/download/v0.5.0-rc.3/UserAgent-x86_64-apple-darwin.tar.xz"
+    sha256 "991ed69fcd51ed6ac7265c4826b4db7489044b185b0bbce85174418ff6e1c3ae"
   end
 
   def install
@@ -23,7 +20,11 @@ class Useragent < Formula
     if (axum = Dir["UserAgent-*/axum_server"].first)
       bin.install axum => "axum_server"
     end
-    pkgshare.install "config" => "examples" if (buildpath/"config").directory?
+    if (cfg = Dir["UserAgent-*/config"].first)
+      pkgshare.install cfg => "examples"
+    elsif (buildpath/"config").directory?
+      pkgshare.install "config" => "examples"
+    end
   end
 
   def caveats
@@ -38,6 +39,9 @@ class Useragent < Formula
       To initialize an Intel consumer config:
         mkdir -p ~/.useragent
         cp #{opt_pkgshare}/examples/mesh.intel-consumer.toml.example ~/.useragent/mesh.toml
+
+      Fleet three-node example:
+        cp #{opt_pkgshare}/examples/fleet.three-node.toml.example ~/.useragent/fleet.toml
     EOS
   end
 
