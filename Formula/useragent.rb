@@ -5,26 +5,28 @@
 class Useragent < Formula
   desc "Powerful AI agent CLI with multi-model support and tool use"
   homepage "https://github.com/tricorelife-labs/useragent-releases"
-  version "0.5.0-rc.3"
+  version "0.5.0-rc.7"
 
   if OS.mac? && RbConfig::CONFIG["host_cpu"] == "arm64"
-    url "https://github.com/tricorelife-labs/useragent-releases/releases/download/v0.5.0-rc.3/UserAgent-aarch64-apple-darwin.tar.xz"
-    sha256 "c9bd0cd47fc670cc7f93b9d73f3640bdebe2fd859808ff212df05a98df6173b5"
+    url "https://github.com/tricorelife-labs/useragent-releases/releases/download/v0.5.0-rc.7/UserAgent-aarch64-apple-darwin.tar.xz"
+    sha256 "1aa678e26e6105dd10549d35fa7dbffed7c4fbfaba707daef98a668b6c1d0b5a"
   elsif OS.mac? && RbConfig::CONFIG["host_cpu"] == "x86_64"
-    url "https://github.com/tricorelife-labs/useragent-releases/releases/download/v0.5.0-rc.3/UserAgent-x86_64-apple-darwin.tar.xz"
-    sha256 "991ed69fcd51ed6ac7265c4826b4db7489044b185b0bbce85174418ff6e1c3ae"
+    url "https://github.com/tricorelife-labs/useragent-releases/releases/download/v0.5.0-rc.7/UserAgent-x86_64-apple-darwin.tar.xz"
+    sha256 "5ef68e1830ec442e878a90fe98dd648b2062c2aeb171cd5546af971091349b65"
   end
 
   def install
-    cli = Dir["useragent-cli", "UserAgent-*/useragent-cli"].first
-    bin.install cli => "useragent"
-
-    if (axum = Dir["axum_server", "UserAgent-*/axum_server"].first)
+    bin.install Dir["UserAgent-*/useragent-cli"].first => "useragent"
+    if (axum = Dir["UserAgent-*/axum_server"].first)
       bin.install axum => "axum_server"
     end
-
-    if (cfg = Dir["config", "UserAgent-*/config"].first)
+    if (opencli_mcp = Dir["UserAgent-*/useragent-opencli-mcp"].first)
+      bin.install opencli_mcp => "useragent-opencli-mcp"
+    end
+    if (cfg = Dir["UserAgent-*/config"].first)
       pkgshare.install cfg => "examples"
+    elsif (buildpath/"config").directory?
+      pkgshare.install "config" => "examples"
     end
   end
 
@@ -49,5 +51,6 @@ class Useragent < Formula
   test do
     assert_match version.to_s, shell_output("#{bin}/useragent --version 2>&1")
     assert_path_exists bin/"axum_server"
+    assert_path_exists bin/"useragent-opencli-mcp"
   end
 end
