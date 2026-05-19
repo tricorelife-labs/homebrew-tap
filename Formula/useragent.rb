@@ -16,14 +16,14 @@ class Useragent < Formula
   end
 
   def install
-    bin.install Dir["UserAgent-*/useragent-cli"].first => "useragent"
-    if (axum = Dir["UserAgent-*/axum_server"].first)
+    bin.install Dir["**/useragent-cli"].first => "useragent"
+    if (axum = Dir["**/axum_server"].first)
       bin.install axum => "axum_server"
     end
-    if (opencli_mcp = Dir["UserAgent-*/useragent-opencli-mcp"].first)
+    if (opencli_mcp = Dir["**/useragent-opencli-mcp"].first)
       bin.install opencli_mcp => "useragent-opencli-mcp"
     end
-    if (cfg = Dir["UserAgent-*/config"].first)
+    if (cfg = Dir["**/config"].first)
       pkgshare.install cfg => "examples"
     elsif (buildpath/"config").directory?
       pkgshare.install "config" => "examples"
