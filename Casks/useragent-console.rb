@@ -1,6 +1,6 @@
 cask "useragent-console" do
-  version "0.5.0-rc.10"
-  sha256 "4eff63abde41226ae741136c5ff5550c05b83ef343303a948b8f742b1559ff95"
+  version "0.5.0-rc.13"
+  sha256 "4fb316b9e82c7584233d95486ca6b9951fca4e3a54495cb523952c4153b9f25b"
 
   url "https://github.com/tricorelife-labs/useragent-releases/releases/download/v#{version}/UserAgent-Console-aarch64.dmg"
   name "UserAgent Console"
