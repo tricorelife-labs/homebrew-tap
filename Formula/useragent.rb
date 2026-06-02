@@ -5,14 +5,14 @@
 class Useragent < Formula
   desc "Powerful AI agent CLI with multi-model support and tool use"
   homepage "https://github.com/tricorelife-labs/useragent-releases"
-  version "0.5.0-rc.11"
+  version "0.5.0-rc.12"
 
   if OS.mac? && RbConfig::CONFIG["host_cpu"] == "arm64"
-    url "https://github.com/tricorelife-labs/useragent-releases/releases/download/v0.5.0-rc.11/UserAgent-aarch64-apple-darwin.tar.xz"
-    sha256 "d163e33ffc1466f97358605e931b1fd821d637f4cdc5fb8cc077b74170d24823"
+    url "https://github.com/tricorelife-labs/useragent-releases/releases/download/v0.5.0-rc.12/UserAgent-aarch64-apple-darwin.tar.xz"
+    sha256 "a100a42f9c2d150ccd566062a5170877d76275dcd150b2db61a946f587758d66"
   elsif OS.mac? && RbConfig::CONFIG["host_cpu"] == "x86_64"
-    url "https://github.com/tricorelife-labs/useragent-releases/releases/download/v0.5.0-rc.11/UserAgent-x86_64-apple-darwin.tar.xz"
-    sha256 "7fbbab6fed3105fa8b08ed7f47fe0e8dc554a0dd61711110fe76dd1653711fdb"
+    url "https://github.com/tricorelife-labs/useragent-releases/releases/download/v0.5.0-rc.12/UserAgent-x86_64-apple-darwin.tar.xz"
+    sha256 "7c9e3336261d5c947f92b925de3902e114074eade70a45c57f191e4d9808adcc"
   end
 
   def install
