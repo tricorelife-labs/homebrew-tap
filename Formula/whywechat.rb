@@ -16,11 +16,15 @@ class Whywechat < Formula
   end
 
   def install
-    bin.install "macos/.local/bin/wx"
-    bin.install "macos/.local/bin/wx-watcher"
-    bin.install "macos/.local/bin/wx-pipeline"
-    bin.install "macos/.local/bin/wx-api"
-    prefix.install "macos/NOTICE" if File.exist?("macos/NOTICE")
+    # Homebrew strips the single top-level `macos/` dir during staging, so
+    # locate binaries by glob rather than a fixed path.
+    bin.install Dir["**/bin/wx"].first => "wx"
+    bin.install Dir["**/bin/wx-watcher"].first => "wx-watcher"
+    bin.install Dir["**/bin/wx-pipeline"].first => "wx-pipeline"
+    bin.install Dir["**/bin/wx-api"].first => "wx-api"
+    if (notice = Dir["**/NOTICE"].first)
+      prefix.install notice
+    end
   end
 
   def caveats
