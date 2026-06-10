@@ -5,25 +5,29 @@
 class Useragent < Formula
   desc "Powerful AI agent CLI with multi-model support and tool use"
   homepage "https://github.com/tricorelife-labs/useragent-releases"
-  version "0.5.0-rc.20"
+  version "0.5.0-rc.21"
 
   if OS.mac? && RbConfig::CONFIG["host_cpu"] == "arm64"
-    url "https://github.com/tricorelife-labs/useragent-releases/releases/download/v0.5.0-rc.20/UserAgent-aarch64-apple-darwin.tar.xz"
-    sha256 "049e75c25a74fd5d92154265832005a24e839670e2b36be099b16eac5958282c"
-  elsif OS.linux? && RbConfig::CONFIG["host_cpu"] == "x86_64"
-    url "https://github.com/tricorelife-labs/useragent-releases/releases/download/v0.5.0-rc.20/UserAgent-x86_64-unknown-linux-gnu.tar.xz"
-    sha256 "970307fe7bb9fb41b59e10a9b05be2f7781b20d5becef6c74863c3e03ac33762"
+    url "https://github.com/tricorelife-labs/useragent-releases/releases/download/v0.5.0-rc.21/UserAgent-aarch64-apple-darwin.tar.xz"
+    sha256 "c346d14bacbdf88c75c5b930d9d3e70ce92e22ddffa846d1fd5fb7ed268c758d"
+  elsif OS.mac? && RbConfig::CONFIG["host_cpu"] == "x86_64"
+    url "https://github.com/tricorelife-labs/useragent-releases/releases/download/v0.5.0-rc.21/UserAgent-x86_64-apple-darwin.tar.xz"
+    sha256 "bab320a2192fde9d567c024ed90749d228d2eb08e0c2d3f9216569f985b618fb"
   end
 
   def install
-    bin.install Dir["UserAgent-*/useragent-cli"].first => "useragent"
-    if (axum = Dir["UserAgent-*/axum_server"].first)
+    bin.install Dir["**/useragent-cli"].first => "useragent"
+    if (axum = Dir["**/axum_server"].first)
       bin.install axum => "axum_server"
     end
-    if (opencli_mcp = Dir["UserAgent-*/useragent-opencli-mcp"].first)
+    if (opencli_mcp = Dir["**/useragent-opencli-mcp"].first)
       bin.install opencli_mcp => "useragent-opencli-mcp"
     end
-    pkgshare.install "config" => "examples" if (buildpath/"config").directory?
+    if (cfg = Dir["**/config"].first)
+      pkgshare.install cfg => "examples"
+    elsif (buildpath/"config").directory?
+      pkgshare.install "config" => "examples"
+    end
   end
 
   def caveats
