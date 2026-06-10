@@ -1,59 +1,65 @@
-# typed: strict
-# frozen_string_literal: true
-
-# Homebrew formula for UserAgent.
 class Useragent < Formula
-  desc "Powerful AI agent CLI with multi-model support and tool use"
-  homepage "https://github.com/tricorelife-labs/useragent-releases"
-  version "0.5.0-rc.18"
+  desc "A powerful AI agent CLI with multi-model support and tool use"
+  homepage "https://github.com/tricorelife-labs/UserAgent"
+  version "0.5.0-rc.20"
+  if OS.mac?
+    if Hardware::CPU.arm?
+      url "https://github.com/tricorelife-labs/UserAgent/releases/download/v0.5.0-rc.20/UserAgent-aarch64-apple-darwin.tar.xz"
+      sha256 "e0f688f5035cb02fb7a9f4b5e956fb7c7d2200d4c0841e63ed93f9dbc81785e1"
+    end
+    if Hardware::CPU.intel?
+      url "https://github.com/tricorelife-labs/UserAgent/releases/download/v0.5.0-rc.20/UserAgent-x86_64-apple-darwin.tar.xz"
+    end
+  end
+  if OS.linux? && Hardware::CPU.intel?
+    url "https://github.com/tricorelife-labs/UserAgent/releases/download/v0.5.0-rc.20/UserAgent-x86_64-unknown-linux-gnu.tar.xz"
+    sha256 "b7a4c04a6a818ccaa1d5524fb2c61c127dbad4cf4a1a900e5769e67bdcf3092e"
+  end
+  license "MIT"
 
-  if OS.mac? && RbConfig::CONFIG["host_cpu"] == "arm64"
-    url "https://github.com/tricorelife-labs/useragent-releases/releases/download/v0.5.0-rc.18/UserAgent-aarch64-apple-darwin.tar.xz"
-    sha256 "d1814baf2a9f9423ba8fbaa7833c05c79d6bd2c10eb7012f14f03a75e1092fb9"
-  elsif OS.mac? && RbConfig::CONFIG["host_cpu"] == "x86_64"
-    url "https://github.com/tricorelife-labs/useragent-releases/releases/download/v0.5.0-rc.18/UserAgent-x86_64-apple-darwin.tar.xz"
-    sha256 "19a00491a6318b24366659dbff539b5c36bf1b61ef351a12ec06fd98fe307a42"
-  elsif OS.linux? && RbConfig::CONFIG["host_cpu"] == "x86_64"
-    url "https://github.com/tricorelife-labs/useragent-releases/releases/download/v0.5.0-rc.18/UserAgent-x86_64-unknown-linux-gnu.tar.xz"
-    sha256 "0e5498e725d6730ebbfe016d2b573a7abfa317901fa0ad2d502c1d3ca4e9a9f3"
+  BINARY_ALIASES = {
+    "aarch64-apple-darwin":     {},
+    "x86_64-apple-darwin":      {},
+    "x86_64-unknown-linux-gnu": {},
+  }.freeze
+
+  def target_triple
+    cpu = Hardware::CPU.arm? ? "aarch64" : "x86_64"
+    os = OS.mac? ? "apple-darwin" : "unknown-linux-gnu"
+
+    "#{cpu}-#{os}"
+  end
+
+  def install_binary_aliases!
+    BINARY_ALIASES[target_triple.to_sym].each do |source, dests|
+      dests.each do |dest|
+        bin.install_symlink bin/source.to_s => dest
+      end
+    end
   end
 
   def install
-    bin.install Dir["**/useragent-cli"].first => "useragent"
-    if (axum = Dir["**/axum_server"].first)
-      bin.install axum => "axum_server"
+    if OS.mac? && Hardware::CPU.arm?
+      bin.install "axum_server", "cli", "comic_video_generator", "save_image_from_response", "segmented_video_gen",
+"server", "test_proxy", "tricore_agent", "useragent-cli", "useragent-opencli-mcp"
     end
-    if (opencli_mcp = Dir["**/useragent-opencli-mcp"].first)
-      bin.install opencli_mcp => "useragent-opencli-mcp"
+    if OS.mac? && Hardware::CPU.intel?
+      bin.install "axum_server", "cli", "comic_video_generator", "save_image_from_response", "segmented_video_gen",
+"server", "test_proxy", "tricore_agent", "useragent-cli", "useragent-opencli-mcp"
     end
-    if (cfg = Dir["**/config"].first)
-      pkgshare.install cfg => "examples"
-    elsif (buildpath/"config").directory?
-      pkgshare.install "config" => "examples"
+    if OS.linux? && Hardware::CPU.intel?
+      bin.install "axum_server", "cli", "comic_video_generator", "save_image_from_response", "segmented_video_gen",
+"server", "test_proxy", "tricore_agent", "useragent-cli", "useragent-opencli-mcp"
     end
-  end
 
-  def caveats
-    <<~EOS
-      Example mesh configs are installed to:
-        #{opt_pkgshare}/examples
+    install_binary_aliases!
 
-      To initialize the M4 provider config:
-        mkdir -p ~/.useragent
-        cp #{opt_pkgshare}/examples/mesh.m4-provider.toml.example ~/.useragent/mesh.toml
+    # Homebrew will automatically install these, so we don't need to do that
+    doc_files = Dir["README.*", "readme.*", "LICENSE", "LICENSE.*", "CHANGELOG.*"]
+    leftover_contents = Dir["*"] - doc_files
 
-      To initialize an Intel consumer config:
-        mkdir -p ~/.useragent
-        cp #{opt_pkgshare}/examples/mesh.intel-consumer.toml.example ~/.useragent/mesh.toml
-
-      Fleet three-node example:
-        cp #{opt_pkgshare}/examples/fleet.three-node.toml.example ~/.useragent/fleet.toml
-    EOS
-  end
-
-  test do
-    assert_match version.to_s, shell_output("#{bin}/useragent --version 2>&1")
-    assert_path_exists bin/"axum_server"
-    assert_path_exists bin/"useragent-opencli-mcp"
+    # Install any leftover files in pkgshare; these are probably config or
+    # sample files.
+    pkgshare.install(*leftover_contents) unless leftover_contents.empty?
   end
 end
