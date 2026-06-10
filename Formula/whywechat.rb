@@ -6,11 +6,11 @@
 class Whywechat < Formula
   desc "Local-first WeChat data pipeline and CLI"
   homepage "https://github.com/tricorelife-labs/whywechat-releases"
-  version "0.2.5"
+  version "0.2.6"
 
   if OS.mac? && Hardware::CPU.arm?
     url "https://github.com/tricorelife-labs/whywechat-releases/releases/download/v#{version}/whywechat-v#{version}-macos-arm64.zip"
-    sha256 "c7e5ac454137f1fd870b26e1b4ce8d960353ea4364137582f81aac10f51e1e8b"
+    sha256 "c37214cf4082177d097bf4a3ca5c6542955fa58a8e8f2dfed823725970739c0d"
   else
     odie "whywechat currently ships macOS Apple Silicon binaries only (use Scoop on Windows)"
   end
