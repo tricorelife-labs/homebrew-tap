@@ -16,13 +16,15 @@ class Whywechat < Formula
   end
 
   def install
-    # Homebrew strips the single top-level `macos/` dir during staging, so
-    # locate binaries by glob rather than a fixed path.
-    bin.install Dir["**/bin/wx"].first => "wx"
-    bin.install Dir["**/bin/wx-watcher"].first => "wx-watcher"
-    bin.install Dir["**/bin/wx-pipeline"].first => "wx-pipeline"
-    bin.install Dir["**/bin/wx-api"].first => "wx-api"
-    if (notice = Dir["**/NOTICE"].first)
+    # Homebrew strips the single top-level `macos/` dir during staging, and
+    # the binaries live under the hidden `.local/bin/` — `**` skips hidden
+    # dirs unless FNM_DOTMATCH is set, so glob with it.
+    %w[wx wx-watcher wx-pipeline wx-api].each do |name|
+      src = Dir.glob("**/#{name}", File::FNM_DOTMATCH).find { |p| File.file?(p) }
+      odie "binary #{name} not found in archive" unless src
+      bin.install src => name
+    end
+    if (notice = Dir.glob("**/NOTICE", File::FNM_DOTMATCH).first)
       prefix.install notice
     end
   end
