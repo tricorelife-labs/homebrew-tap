@@ -15,7 +15,7 @@ cask "useragent-node" do
   desc "Desktop app for running and managing a local UserAgent node"
   homepage "https://github.com/tricorelife-labs/useragent-releases"
 
-  depends_on macos: ">= :ventura"
+  depends_on macos: :ventura
 
   app "UserAgent Node.app"
 
