@@ -6,8 +6,8 @@ cask "useragent-node" do
   arch arm: "aarch64", intel: "x86_64"
 
   version "0.5.0-rc.21"
-  sha256 arm: "5714d792eb51c8cc16a2be6605019f1448c4659df6db9441d253d063f70d78a2",
-         intel: "6ec468a8a78476cb56afad9f81f6cfdb89be68469d40d96138824c4683da0a12"
+  sha256 arm: "491aa3f666e484ace573359dcd840a4e0f835f7c2fc8ba7b8426f15f9e3188b3",
+         intel: "e1aed942f556faa34cef237de97d4770a4af0b58465502289754800dafa4cd07"
 
   url "https://github.com/tricorelife-labs/useragent-releases/releases/download/v0.5.0-rc.21/UserAgent-Node-#{arch}-apple-darwin.dmg",
       verified: "github.com/tricorelife-labs/useragent-releases/"
