@@ -19,6 +19,19 @@ cask "useragent-node" do
 
   app "UserAgent Node.app"
 
+  caveats <<~EOS
+    This cask installs the desktop app only:
+      UserAgent Node.app
+
+    The CLI command `useragent` is installed by the separate formula:
+      brew install tricorelife-labs/tap/useragent
+
+    If an old `useragent` command remains after uninstalling this cask, remove
+    the CLI formula separately:
+      brew uninstall tricorelife-labs/tap/useragent
+      which useragent
+  EOS
+
   zap trash: [
     "~/Library/Application Support/org.jixiai.useragent.desktop",
     "~/Library/Caches/org.jixiai.useragent.desktop",
