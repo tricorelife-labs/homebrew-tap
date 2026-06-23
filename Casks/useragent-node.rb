@@ -5,11 +5,11 @@
 cask "useragent-node" do
   arch arm: "aarch64", intel: "x86_64"
 
-  version "0.5.0-rc.21"
-  sha256 arm: "491aa3f666e484ace573359dcd840a4e0f835f7c2fc8ba7b8426f15f9e3188b3",
-         intel: "e1aed942f556faa34cef237de97d4770a4af0b58465502289754800dafa4cd07"
+  version "0.5.0-rc.22"
+  sha256 arm: "3d1655fe2f9741cd479a732375859fb1fa124083c25f25e34d9e19077533fab8",
+         intel: "1f077d149e279a0cde7009a64945b1d2114a5e9570fb7a562965d79e61f0b0b5"
 
-  url "https://github.com/tricorelife-labs/useragent-releases/releases/download/v0.5.0-rc.21/UserAgent-Node-#{arch}-apple-darwin.dmg",
+  url "https://github.com/tricorelife-labs/useragent-releases/releases/download/v0.5.0-rc.22/UserAgent-Node-#{arch}-apple-darwin.dmg",
       verified: "github.com/tricorelife-labs/useragent-releases/"
   name "UserAgent Node"
   desc "Desktop app for running and managing a local UserAgent node"
