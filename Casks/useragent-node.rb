@@ -19,9 +19,22 @@ cask "useragent-node" do
 
   app "UserAgent Node.app"
 
+  # Temporary until the desktop DMG is Developer ID signed and notarized.
+  # Without this, Gatekeeper reports the unsigned Homebrew-downloaded app as
+  # damaged because Homebrew preserves the download quarantine attribute.
+  postflight do
+    system_command "/usr/bin/xattr",
+                   args: ["-dr", "com.apple.quarantine", "#{appdir}/UserAgent Node.app"],
+                   print_stdout: false,
+                   print_stderr: false
+  end
+
   caveats <<~EOS
     This cask installs the desktop app only:
       UserAgent Node.app
+
+    If macOS still says the app is damaged, clear Gatekeeper quarantine:
+      xattr -dr com.apple.quarantine "/Applications/UserAgent Node.app"
 
     The CLI command `useragent` is installed by the separate formula:
       brew install tricorelife-labs/tap/useragent
