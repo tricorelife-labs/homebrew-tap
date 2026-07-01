@@ -7,6 +7,10 @@ class Useragent < Formula
   homepage "https://github.com/tricorelife-labs/useragent-releases"
   version "0.5.0-rc.21"
 
+  # DEPRECATED: the useragent CLI now ships inside the useragent-node cask.
+  # Install with: brew install --cask tricorelife-labs/tap/useragent-node
+  deprecate! date: "2026-07-01", because: "the CLI now ships inside the useragent-node cask"
+
   if OS.mac? && RbConfig::CONFIG["host_cpu"] == "arm64"
     url "https://github.com/tricorelife-labs/useragent-releases/releases/download/v0.5.0-rc.21/UserAgent-aarch64-apple-darwin.tar.xz"
     sha256 "c346d14bacbdf88c75c5b930d9d3e70ce92e22ddffa846d1fd5fb7ed268c758d"
