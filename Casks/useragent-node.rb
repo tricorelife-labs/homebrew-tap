@@ -5,19 +5,24 @@
 cask "useragent-node" do
   arch arm: "aarch64", intel: "x86_64"
 
-  version "0.5.0-rc.24"
-  sha256 arm: "184135b1b0e09b0cd43a76f36e7865c759a0f12e9a24f71a510b17f2bef83b94",
-         intel: "dfc6c39750c4042cb9324f8e76e16931fc4744be97986368eb3764f4daaaa8aa"
+  version "0.5.0-rc.25"
+  sha256 arm: "ab6eef26269580bf08d0d312cc5086a0fbc86206d3ccbffc0650ddbf06bd3be1",
+         intel: "6549fc1ee754eadb1578d14dd51e1427423685e4fb9fa556c502e704b19a8625"
 
-  url "https://github.com/tricorelife-labs/useragent-releases/releases/download/v0.5.0-rc.24/UserAgent-Node-#{arch}-apple-darwin.dmg",
+  url "https://github.com/tricorelife-labs/useragent-releases/releases/download/v0.5.0-rc.25/UserAgent-Node-#{arch}-apple-darwin.dmg",
       verified: "github.com/tricorelife-labs/useragent-releases/"
   name "UserAgent Node"
-  desc "Desktop app for running and managing a local UserAgent node"
+  desc "Desktop app and CLI for running and managing a local UserAgent node"
   homepage "https://github.com/tricorelife-labs/useragent-releases"
 
   depends_on macos: :big_sur
 
   app "UserAgent Node.app"
+
+  # Ship the `useragent` CLI from inside the app bundle, so one install gives
+  # both the desktop app AND the CLI. The desktop app bundles useragent-cli as a
+  # Tauri externalBin, which lands in Contents/MacOS/.
+  binary "#{appdir}/UserAgent Node.app/Contents/MacOS/useragent-cli", target: "useragent"
 
   # Temporary until the desktop DMG is Developer ID signed and notarized.
   # Without this, Gatekeeper reports the unsigned Homebrew-downloaded app as
@@ -30,17 +35,16 @@ cask "useragent-node" do
   end
 
   caveats <<~EOS
-    This cask installs the desktop app only:
-      UserAgent Node.app
+    This cask installs BOTH:
+      UserAgent Node.app          (the desktop app)
+      useragent                   (the CLI, symlinked from inside the app bundle)
 
     If macOS still says the app is damaged, clear Gatekeeper quarantine:
       xattr -dr com.apple.quarantine "/Applications/UserAgent Node.app"
 
-    The CLI command `useragent` is installed by the separate formula:
-      brew install tricorelife-labs/tap/useragent
-
-    If an old `useragent` command remains after uninstalling this cask, remove
-    the CLI formula separately:
+    The standalone `useragent` formula is DEPRECATED and superseded by this cask
+    (the CLI now ships inside the app). If you previously installed it, remove it
+    so the two do not fight over the `useragent` command:
       brew uninstall tricorelife-labs/tap/useragent
       which useragent
   EOS
